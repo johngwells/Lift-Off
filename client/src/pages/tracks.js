@@ -1,22 +1,21 @@
 import React from 'react';
-import { Layout } from '../components';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import TrackCard from '../containers/track-card';
-import QueryResult from '../components/query-result';
+import { Layout, QueryResult } from '../components';
 
+/** TRACKS gql query to retreive all tracks */
 export const TRACKS = gql`
   query getTracks {
     tracksForHome {
       id
       title
-      author {
-        photo
-        name
-        id
-      }
       thumbnail
       length
       modulesCount
+      author {
+        name
+        photo
+      }
     }
   }
 `;
@@ -27,12 +26,12 @@ export const TRACKS = gql`
  */
 const Tracks = () => {
   const { loading, error, data } = useQuery(TRACKS);
-  console.log({ data });
+
   return (
     <Layout grid>
-      <QueryResult loading={loading} error={error} data={data}>
-        {data?.tracksForHome?.map(card => (
-          <TrackCard key={card.id} track={card} />
+      <QueryResult error={error} loading={loading} data={data}>
+        {data?.tracksForHome?.map((track, index) => (
+          <TrackCard key={track.id} track={track} />
         ))}
       </QueryResult>
     </Layout>
